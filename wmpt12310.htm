@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<script language='speedscript'>
+/* Programa.: wmpt12310.htm
+   Descricao: Teste para upload e compressão de fotos enviadas do celular
+   Autor....: Lucas Vinicius de Jesus Costa
+   Empresa..: MfdsTech
+   Data.....: 15/07/2019 (dd/mm/aaaa) */
+</script>
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Teste Upload Fotos - Cocamar Cooperativa Agroindustrial</title>
+<script src="/cocamar/jsbiblio/events.js"></script>
+<script src="/cocamar/jsbiblio/formata.js"></script>
+<style type='text/css'>
+.red {color: red}
+</style>
+</head>
+
+<body>
+    <form name='form' method='post'>
+    <input type="file" onchange="previewFile()"><br>
+	<div>
+	  <h3>Imagem Original<h3>
+	  <img id="source_image" alt="Preview" />
+	</div>
+	<!--<div>
+	  <h3>Tamanho Alterado<h3>
+	  <div id="result_resize_image">
+	  </div>
+	</div>-->
+	<div>
+	  <h3>Imagem Comprimida<h3>
+	  <img id="result_compress_image" class='img_container' />
+	</div>
+	<br><br>
+	
+	<div>
+	  <fieldset>
+	    <legend>Configurações de Compressão</legend>
+	    <div id='controls-wrapper'>
+	      <p>Proporção: <input id="jpeg_encode_quality" size='3' type="text" value="70" />% <span class='red'>*</span</p>
+	      <br><sub class='red'>* Valor 100 pode aumentar o tamanho do arquivo!</sub>
+	    </div>
+	  </fieldset>
+	</div>
+
+	<div>
+	  <fieldset>
+	    <legend>Console:</legend>
+	    <div id='console_out'></div>
+	  </fieldset>
+	</div>
+	<script>
+	  //Console logging (html)
+		if (!window.console)
+		  console = {};
+		
+		var console_out = document.getElementById('console_out');
+		var output_format = "jpg";
+		
+		console.log = function(message) {
+		  console_out.innerHTML += message + '<br />';
+		  console_out.scrollTop = console_out.scrollHeight;
+		}
+		
+		var encodeButton = document.getElementById('jpeg_encode_button');
+		var encodeQuality = document.getElementById('jpeg_encode_quality');
+		
+		
+		function previewFile() { 
+		  var preview = document.getElementById('source_image');
+		  var previewCompress = document.getElementById('result_compress_image');
+		  var file   = document.querySelector('input[type=file]').files[0]; 
+		  var reader  = new FileReader();
+		  reader.addEventListener("load", function(e) {
+		    preview.src = e.target.result; 
+		    preview.onload = function() {
+		      //resizeFile(this, preview);
+		      compressFile(this, previewCompress)
+		    };
+		
+		    // preview.src = reader.result; 
+		  }, false);
+		  
+		  if (file) {  
+		    reader.readAsDataURL(file);
+		  }
+		}
+		
+		function resizeFile(loadedData, preview) { 
+		  console.log(loadedData.width + ' ' + loadedData.height);
+		  var canvas = document.createElement('canvas'),
+		    ctx;
+		  canvas.width = Math.round(loadedData.width / 2);
+		  canvas.height = Math.round(loadedData.height / 2);
+		  var resizedImage = document.getElementById('result_resize_image');
+		  resizedImage.appendChild(canvas);
+		  // document.body.appendChild(canvas);
+		  ctx = canvas.getContext('2d');
+		  ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
+		}
+		
+		
+		function compressFile(loadedData, preview) { 
+		  console.log('width: ' + loadedData.width + ' height: ' + loadedData.height);
+		
+		  var result_image = document.getElementById('result_compress_image');
+		  var quality = parseInt(encodeQuality.value);
+		  console.log("Qualidade >>" + quality);
+		
+		  console.log("Processando...");
+		  var time_start = new Date().getTime();
+		
+		  var mime_type = "image/jpeg";
+		  if (typeof output_format !== "undefined" && output_format == "png") {
+		    mime_type = "image/png";
+		  }
+		
+		  var cvs = document.createElement('canvas');
+		  if (loadedData.width > 1920 || loadedData.width > Math.round(loadedData.height / 2.6)) {
+		      cvs.width = Math.round(loadedData.width / 2);
+		      
+		      if (loadedData.height > 1920 || loadedData.height > Math.round(loadedData.width / 2.6)) {
+                  cvs.height = Math.round(loadedData.height / 2);
+              }
+		  } else { 
+			  cvs.width = Math.round(loadedData.width / 1.2);
+			  cvs.height = Math.round(loadedData.height / 1.2);
+		  }
+		  var ctx = cvs.getContext("2d").drawImage(loadedData, 0, 0, cvs.width, cvs.height);
+		  var newImageData = cvs.toDataURL(mime_type, quality / 100);
+		  var result_image_obj = new Image();
+		  result_image_obj.src = newImageData;
+		  result_image.src = result_image_obj.src;
+		  
+		  result_image.onload = function() {
+		  }
+		  var duration = new Date().getTime() - time_start;
+		
+		  console.log("Terminado");
+		  console.log('Processado em: ' + duration + 'ms');
+		}
+	</script>
+    </form>
+    <!-- <script src='https://github.com/xkeshi/image-compressor/blob/master/dist/image-compressor.min.js'></script> -->
+</body>
+</html>
