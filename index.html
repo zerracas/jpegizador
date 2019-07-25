@@ -120,13 +120,13 @@
 		  var cvs = document.createElement('canvas');
 		  if (loadedData.width > 1920 || loadedData.width > Math.round(loadedData.height / 2.6)) {
 		      cvs.width = Math.round(loadedData.width / 2);
-		      
-		      if (loadedData.height > 1920 || loadedData.height > Math.round(loadedData.width / 2.6)) {
-                      	cvs.height = Math.round(loadedData.height / 2);
-                      }
-		  } else { 
-			  cvs.width = Math.round(loadedData.width / 1.2);
-			  cvs.height = Math.round(loadedData.height / 1.2);
+		  }
+		  if (loadedData.height > 1920 || loadedData.height > Math.round(loadedData.width / 2.6)) {
+                      cvs.height = Math.round(loadedData.height / 2);
+         	  }
+                  if (loadedData.width < 1920 || loadedData.height < 1920) {
+		      cvs.width = Math.round(loadedData.width / 1.2);
+		      cvs.height = Math.round(loadedData.height / 1.2);
 		  }
 		  var ctx = cvs.getContext("2d").drawImage(loadedData, 0, 0, cvs.width, cvs.height);
 		  var newImageData = cvs.toDataURL(mime_type, quality / 100);
