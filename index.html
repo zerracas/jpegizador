@@ -20,6 +20,15 @@
 <body>
     <form name='form' method='post'>
     <input type="file" onchange="previewFile()"><br>
+    	<div>
+	  <fieldset>
+	    <legend>Configurações de Compressão</legend>
+	    <div id='controls-wrapper'>
+	      <p>Qualidade: <input type="range" min="0" max="100" value="70" id="jpeg_encode_quality" onmousemove='previewFile()'> Valor: <span id='demo'></span><span class='red'>*</span></p>
+	      <br><sub class='red'>* Valor 100 pode aumentar o tamanho do arquivo!</sub>
+	    </div>
+	  </fieldset>
+	</div>
 	<div>
 	  <h3>Imagem Original<h3>
 	  <img id="source_image" alt="Preview" />
@@ -34,16 +43,6 @@
 	  <img id="result_compress_image" class='img_container' />
 	</div>
 	<br><br>
-	
-	<div>
-	  <fieldset>
-	    <legend>Configurações de Compressão</legend>
-	    <div id='controls-wrapper'>
-	      <p>Qualidade: <input type="range" min="0" max="100" value="70" id="jpeg_encode_quality" onmousemove='previewFile()'> Valor: <span id='demo'></span><span class='red'>*</span></p>
-	      <br><sub class='red'>* Valor 100 pode aumentar o tamanho do arquivo!</sub>
-	    </div>
-	  </fieldset>
-	</div>
 
 	<!--<div>
 	  <fieldset>
