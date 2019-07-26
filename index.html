@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <script>
-/* Programa.: jpegizador.htm
-   Descricao: Teste para upload e compressão de fotos enviadas do celular
+/* Programa.: index.html
+   Descricao: Teste para compressão de fotos enviadas pelo celular
    Autor....: Lucas Vinicius de Jesus Costa
    Empresa..: MfdsTech
    Data.....: 15/07/2019 (dd/mm/aaaa) */
@@ -39,21 +39,21 @@
 	  <fieldset>
 	    <legend>Configurações de Compressão</legend>
 	    <div id='controls-wrapper'>
-	      <p>Proporção: <input id="jpeg_encode_quality" size='3' type="text" value="70" />% <span class='red'>*</span</p>
+	      <p>Qualidade: <input type="range" min="0" max="100" value="70" id="jpeg_encode_quality" onmousemove='previewFile()'> Valor: <span id='demo'></span><span class='red'>*</span></p>
 	      <br><sub class='red'>* Valor 100 pode aumentar o tamanho do arquivo!</sub>
 	    </div>
 	  </fieldset>
 	</div>
 
-	<div>
+	<!--<div>
 	  <fieldset>
 	    <legend>Console:</legend>
 	    <div id='console_out'></div>
 	  </fieldset>
-	</div>
+	</div>-->
 	<script>
 	  //Console logging (html)
-		if (!window.console)
+		/*if (!window.console)
 		  console = {};
 		
 		var console_out = document.getElementById('console_out');
@@ -62,7 +62,7 @@
 		console.log = function(message) {
 		  console_out.innerHTML += message + '<br />';
 		  console_out.scrollTop = console_out.scrollHeight;
-		}
+		}*/
 		
 		var encodeButton = document.getElementById('jpeg_encode_button');
 		var encodeQuality = document.getElementById('jpeg_encode_quality');
@@ -89,7 +89,7 @@
 		}
 		
 		function resizeFile(loadedData, preview) { 
-		  console.log(loadedData.width + ' ' + loadedData.height);
+		  //console.log(loadedData.width + ' ' + loadedData.height);
 		  var canvas = document.createElement('canvas'),
 		    ctx;
 		  canvas.width = Math.round(loadedData.width / 2);
@@ -103,13 +103,13 @@
 		
 		
 		function compressFile(loadedData, preview) { 
-		  console.log('width: ' + loadedData.width + ' height: ' + loadedData.height);
+		  //console.log('width: ' + loadedData.width + ' height: ' + loadedData.height);
 		
 		  var result_image = document.getElementById('result_compress_image');
 		  var quality = parseInt(encodeQuality.value);
-		  console.log("Qualidade >>" + quality);
+		  //console.log("Qualidade >>" + quality);
 		
-		  console.log("Processando...");
+		  //console.log("Processando...");
 		  var time_start = new Date().getTime();
 		
 		  var mime_type = "image/jpeg";
@@ -122,11 +122,11 @@
 		      cvs.width = Math.round(loadedData.width / 2);
 		  }
 		  if (loadedData.height > 1920 || loadedData.height > Math.round(loadedData.width / 2.6)) {
-                      cvs.height = Math.round(loadedData.height / 2);
-         	  }
-                  if (loadedData.width < 1920 || loadedData.height < 1920) {
-		      cvs.width = Math.round(loadedData.width / 1.2);
-		      cvs.height = Math.round(loadedData.height / 1.2);
+              cvs.height = Math.round(loadedData.height / 2);
+          }
+          if (loadedData.width < 1920 || loadedData.height < 1920) {
+			  cvs.width = Math.round(loadedData.width / 1.2);
+			  cvs.height = Math.round(loadedData.height / 1.2);
 		  }
 		  var ctx = cvs.getContext("2d").drawImage(loadedData, 0, 0, cvs.width, cvs.height);
 		  var newImageData = cvs.toDataURL(mime_type, quality / 100);
@@ -138,10 +138,20 @@
 		  }
 		  var duration = new Date().getTime() - time_start;
 		
-		  console.log("Terminado");
-		  console.log('Processado em: ' + duration + 'ms');
+		  //console.log("Terminado");
+		  //console.log('Processado em: ' + duration + 'ms');
+		}
+		
+		var slider = document.getElementById("jpeg_encode_quality");
+		var output = document.getElementById("demo");
+		output.innerHTML = slider.value; // Display the default slider value
+		
+		// Update the current slider value (each time you drag the slider handle)
+		slider.oninput = function() {
+		  output.innerHTML = this.value;
 		}
 	</script>
     </form>
+    <!-- <script src='https://github.com/xkeshi/image-compressor/blob/master/dist/image-compressor.min.js'></script> -->
 </body>
 </html>
