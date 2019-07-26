@@ -1,37 +1,87 @@
 <!DOCTYPE html>
 <script>
+	
 /* Programa.: index.html
-   Descricao: Teste para compressão de fotos enviadas pelo celular
+   Descricao: Teste para upload e compressão de fotos enviadas do celular
    Autor....: Lucas Vinicius de Jesus Costa
    Empresa..: MfdsTech
-   Data.....: 15/07/2019 (dd/mm/aaaa) */
+   Data.....: 25/07/2019 (dd/mm/aaaa) */
+   
+   /********************************************** Descrição **********************************************/
+   /*******************************************************************************************************/
+   /***                                                                                                 ***/
+   /***    Para a aplicação final, poderá ser colocado o <input> da imagem fora do <form>, e, através   ***/
+   /***    de JavaScript, fazer com que um <input> tipo "hidden" dentro do <form> receba a imagem       ***/
+   /***    gerada pelo programa, já comprimida (ver exemplo). Valores de 50 a 70 reduzem significa-     ***/
+   /***    tivamente o tamanho do arquivo, sem grande perda de dados. Imagens com extensão PNG podem    ***/
+   /***    ter uma diminuição de tamanho de até 95%. Uma imagem do tipo JPEG de 5MB (aproximadamente    ***/
+   /***    o peso de fotos tiradas com celulares de última geração) com qualidade 70% sofre redução     ***/
+   /***    para aproximadamente 900KB (diminuição de 82% do tamanho do arquivo).                        ***/
+   /***                                                                                                 ***/
+   /*******************************************************************************************************/
+   /*********************************************** Exemplo ***********************************************/
+   /***                                                                                                 ***/
+   /***    <img src="codigoGerado...data64..." id="result_compress_image" /> (ver HTML DOM)             ***/
+   /***    <form>                                                                                       ***/
+   /***	   <input type="hidden" name="imagemHidden" id="imagemHidden" />                                ***/
+   /***	   <input type="submit" value="send" onclick="copiar()" />                                      ***/
+   /***		                                                                                        ***/
+   /***	   <script type="text/javascript">                                                              ***/
+   /***		 function copiar()                                                                      ***/
+   /***		 {                                                                                      ***/
+   /***		    var imgSrc = document.getElementById("result_compress_image");                      ***/
+   /***		    var hidden = document.getElementById("imagemHidden");                               ***/
+   /***		    hidden.value = imgSrc.getAttribute("src");                                          ***/
+   /***		    alert(hrc.value);                                                                   ***/
+   /***		 }                                                                                      ***/
+   /***    /script>                                                                                     ***/
+   /***    </form>                                                                                      ***/
+   /***                                                                                                 ***/
+   /*******************************************************************************************************/
+   /******************************************* Planos futuros ********************************************/
+   /***                                                                                                 ***/
+   /***    -> Features de "drag and drop" com múltiplas imagens;                                        ***/
+   /***    -> Features de fazer upload através de link e através do clipboard (ctrl + C);               ***/
+   /***    -> Melhor esclarecimento do tamanho da imagem e qual foi a porcentagem de compressão;        ***/
+   /***                                                                                                 ***/
+   /*******************************************************************************************************/
+   /*******************************************************************************************************/
+   
 </script>
 
 <html>
 <head>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Jpegizador</title>
+
+<title>Jpegizador - Futuramente Jpegify.it</title>
+
 <style type='text/css'>
+* {font-family: arial}
 .red {color: red}
 </style>
+
 </head>
 
-<body>
+<body>    
     <form name='form' method='post'>
-    <input type="file" onchange="previewFile()"><br><br>
-    	<div>
-	  <fieldset>
-	    <legend>Configurações de Compressão</legend>
-	    <div id='controls-wrapper'>
-	      <p>Qualidade: <input type="range" min="0" max="100" value="70" id="jpeg_encode_quality" onmousemove='previewFile()'> Valor: <span id='demo'></span><span class='red'>*</span></p>
-	      <sub class='red'>* Valor 100 pode aumentar o tamanho do arquivo!</sub>
-	    </div>
-	  </fieldset>
-	</div>
+    <input type="file" accept="image/*" onchange="previewArquivo()">
+    <p>Arquivos com extensão PNG ou WEBP serão convertidos para JPEG e perderão a transparência.</p><br>
+    
+    <div>
+      <fieldset>
+        <legend>Configurações de Compressão</legend>
+        <div id='controls-wrapper'>
+          <p>Qualidade: <input type="range" min="0" max="100" value="70" id="jpeg_encode_quality" onmousemove='previewArquivo()'> Valor: <span id='demo'></span><span class='red'>*</span></p>
+          <sub class='red'>* Valor 100 pode aumentar o tamanho do arquivo!</sub>
+        </div>
+      </fieldset>
+    </div>
+    
 	<div>
 	  <h3>Imagem Original<h3>
-	  <img id="source_image" alt="Preview" />
+	  <img id="source_image" />
 	</div>
 	<!--<div>
 	  <h3>Tamanho Alterado<h3>
@@ -67,16 +117,16 @@
 		var encodeQuality = document.getElementById('jpeg_encode_quality');
 		
 		
-		function previewFile() { 
+		function previewArquivo() { 
 		  var preview = document.getElementById('source_image');
 		  var previewCompress = document.getElementById('result_compress_image');
-		  var file   = document.querySelector('input[type=file]').files[0]; 
+		  var file   = document.querySelector('input[type=file]').files[0];
 		  var reader  = new FileReader();
 		  reader.addEventListener("load", function(e) {
 		    preview.src = e.target.result; 
 		    preview.onload = function() {
 		      //resizeFile(this, preview);
-		      compressFile(this, previewCompress)
+		      comprimirArquivo(this, previewCompress)
 		    };
 		
 		    // preview.src = reader.result; 
@@ -101,10 +151,10 @@
 		}
 		
 		
-		function compressFile(loadedData, preview) { 
+		function comprimirArquivo(loadedData, preview) { 
 		  //console.log('width: ' + loadedData.width + ' height: ' + loadedData.height);
 		
-		  var result_image = document.getElementById('result_compress_image');
+		  var resultado = document.getElementById('result_compress_image');
 		  var quality = parseInt(encodeQuality.value);
 		  //console.log("Qualidade >>" + quality);
 		
@@ -129,16 +179,16 @@
 		  }
 		  var ctx = cvs.getContext("2d").drawImage(loadedData, 0, 0, cvs.width, cvs.height);
 		  var newImageData = cvs.toDataURL(mime_type, quality / 100);
-		  var result_image_obj = new Image();
-		  result_image_obj.src = newImageData;
-		  result_image.src = result_image_obj.src;
+		  var resultado_obj = new Image();
+		  resultado_obj.src = newImageData;
+		  resultado.src = resultado_obj.src;
 		  
-		  result_image.onload = function() {
+		  resultado.onload = function() {
 		  }
-		  var duration = new Date().getTime() - time_start;
+		  var duracao = new Date().getTime() - time_start;
 		
 		  //console.log("Terminado");
-		  //console.log('Processado em: ' + duration + 'ms');
+		  //console.log('Processado em: ' + duracao + 'ms');
 		}
 		
 		var slider = document.getElementById("jpeg_encode_quality");
@@ -149,8 +199,8 @@
 		slider.oninput = function() {
 		  output.innerHTML = this.value;
 		}
+		
 	</script>
     </form>
-    <!-- <script src='https://github.com/xkeshi/image-compressor/blob/master/dist/image-compressor.min.js'></script> -->
 </body>
 </html>
